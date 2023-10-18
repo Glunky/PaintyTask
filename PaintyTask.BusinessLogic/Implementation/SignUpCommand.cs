@@ -37,6 +37,7 @@ public class SignUpCommand : ISignUpCommand
         
         if (result.Succeeded)
         {
+            _httpContextAccessor.HttpContext!.Response.StatusCode = (int)HttpStatusCode.Created;
             _logger.LogInformation("Created new user {UserID}", appUser.Id);
             
             return new()

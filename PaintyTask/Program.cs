@@ -24,13 +24,16 @@ services.AddIdentity<DbAppUser, IdentityRole>().AddEntityFrameworkStores<AppDbCo
 
 services.AddScoped<ISignUpCommand, SignUpCommand>();
 services.AddScoped<ISignInCommand, SignInCommand>();
+services.AddScoped<IUploadImageCommand, UploadImageCommand>();
 
+services.AddSingleton<IConfiguration>(builder.Configuration);
 services.AddSingleton<ISignUpRequestToDbAppUserMapper, SignUpRequestToDbAppUserMapper>();
 
-
-
-
 var app = builder.Build();
+var serviceProvider = (app as IApplicationBuilder).ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider;
+serviceProvider.GetService<AppDbContext>()!.Database.Migrate();
+
+
 
 if (app.Environment.IsDevelopment())
 {
